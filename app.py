@@ -44,65 +44,22 @@ with col2:
 
 st.markdown("Share secret messages using keyed coordinate displacements.")
 
-# 4. KEYWORD INPUT (Global for both tabs)
-kw = st.text_input("Enter Secret Key (CHILL, PEACHY, SIMON SAYS, BABY)").upper().strip()
+# 4. KEYWORD INPUT (No suggestions)
+kw = st.text_input("Enter Secret Key", type="password").upper().strip()
 
 tab1, tab2 = st.tabs(["Encode Message", "Decode Vectors"])
 
 # 5. ENCODING TAB
 with tab1:
     st.header("Create a Cipher")
-    msg_input = st.text_input("Enter message:", value="HELLO")
+    msg_input = st.text_input("Enter message:")
     
     if msg_input:
         msg = msg_input.upper()
-        # Apply the geometric transform to every letter
         coords = [transform(char_to_coord[c][0], char_to_coord[c][1], kw) for c in msg if c in char_to_coord]
         
         if coords:
             st.subheader(f"Transformed Start Point: {coords[0]}")
             
             full_code = []
-            for i in range(len(coords) - 1):
-                x1, y1 = coords[i]
-                x2, y2 = coords[i+1]
-                dx, dy = x2 - x1, y2 - y1
-                
-                st.write(f"**{msg[i]} → {msg[i+1]}**")
-                st.code(f"dx = {dx}, dy = {dy} → Vector = ({dx}, {dy})")
-                full_code.append(f"({dx},{dy})")
-            
-            st.success("Sharable Code:")
-            st.code(f"START: {coords[0]} | MOVES: {' '.join(full_code)}")
-
-# 6. DECODING TAB
-with tab2:
-    st.header("Read a Cipher")
-    col1, col2 = st.columns(2)
-    with col1:
-        start_in = st.text_input("Start Point (e.g. 15,3):", value="15,3")
-    with col2:
-        vector_in = st.text_area("Vectors (e.g. -7,1 13,-1):")
-
-    if st.button("Decode"):
-        try:
-            # Parse the provided Start Point
-            sx, sy = map(int, start_in.split(','))
-            curr = (sx, sy)
-            
-            # Step 1: Untransform the start point to find the first letter
-            ux, uy = untransform(sx, sy, kw)
-            decoded = [coord_to_char.get((ux, uy), "?")]
-            
-            # Step 2: Parse Vectors and move through the transformed grid
-            moves = re.findall(r"(-?\d+),(-?\d+)", vector_in)
-            for dx, dy in moves:
-                curr = (curr[0] + int(dx), curr[1] + int(dy))
-                # Step 3: Untransform each stop to find the actual letter
-                ux, uy = untransform(curr[0], curr[1], kw)
-                decoded.append(coord_to_char.get((ux, uy), "?"))
-            
-            st.info(f"Decoded Message: {''.join(decoded)}")
-        except Exception as e:
-            st.error("Error! Make sure your Start Point is 'x,y' and Vectors are '(x,y)'.")
 
