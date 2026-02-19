@@ -15,8 +15,15 @@ char_to_coord = {
 coord_to_char = {v: k for k, v in char_to_coord.items()}
 
 # UI Styling
-st.title("🛰️ Vector Movement Cipher")
+# This adds your character and the title side-by-side
+col1, col2 = st.columns([1, 5])
+with col1:
+    st.image("https://raw.githubusercontent.com/HipWitit/app.py/main/5ob23b1bfmdf1.jpeg", width=80)
+with col2:
+    st.title("Vector Movement Cipher")
+
 st.markdown("Share secret messages using coordinate displacements.")
+
 
 tab1, tab2 = st.tabs(["Encode Message", "Decode Vectors"])
 
