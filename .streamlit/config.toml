@@ -2,7 +2,7 @@
 primaryColor = "#FFB7B2" # Soft Coral
 backgroundColor = "#A1A1CE" # New Periwinkle Lavender
 secondaryBackgroundColor = "#CCCCFF" # Lavender Blue
-textColor = "#FFD4E5" # Changed to pink for better contrast on the darker background
+textColor = "#F9CEE7" # Changed to pink for better contrast on the darker background
 font = "sans serif"
 
 
