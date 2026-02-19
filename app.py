@@ -2,6 +2,7 @@ import streamlit as st
 import re
 
 # 1. THE COORDINATE MAP
+# Make sure to add any missing letters like B, L, or O here!
 char_to_coord = {
     '1': (2, 25), '2': (5, 25), '3': (8, 25), '6': (14, 25), '7': (17, 25), '8': (20, 25),
     'Q': (2, 20), 'W': (5, 20), 'E': (8, 20), 'Y': (14, 20), 'U': (17, 20), 'I': (20, 20),
@@ -28,7 +29,7 @@ def untransform(x, y, key):
     if key == "CHILL":
         return y, x
     elif key == "PEACHY":
-        # Fixed: Matches the swap-and-subtract logic of transform
+        # Mirroring transform exactly to fix the "??????" issue
         return (30 - y), (30 - x)
     elif key == "SIMON SAYS":
         return y, (30 - x)
@@ -60,7 +61,7 @@ with tab1:
         coords = [transform(char_to_coord[c][0], char_to_coord[c][1], kw) for c in msg if c in char_to_coord]
         
         if coords:
-            # Fixed the TypeError by showing specific numbers
+            # FIX: Pulling indices separately prevents the TypeError crash
             st.subheader(f"Transformed Start Point: {coords[0][0]},{coords[0][1]}")
             
             full_code = []
@@ -87,11 +88,11 @@ with tab2:
             sx, sy = map(int, start_in.split(','))
             curr = (sx, sy)
             
-            # Step 1: Untransform the start
+            # Step 1: Untransform the start point
             ux, uy = untransform(sx, sy, kw)
             decoded = [coord_to_char.get((ux, uy), "?")]
             
-            # Step 2: Use regex to find all vector pairs
+            # Step 2: Extract all (dx, dy) pairs and move
             moves = re.findall(r"(-?\d+),(-?\d+)", vector_in)
             for dx, dy in moves:
                 curr = (curr[0] + int(dx), curr[1] + int(dy))
@@ -100,7 +101,8 @@ with tab2:
             
             st.info(f"Decoded Message: {''.join(decoded)}")
         except Exception:
-            st.error("Error! Check your Start Point (x,y) and Vectors.")
+            st.error("Error! Double-check your Start Point (x,y) and Vector formatting.")
+
 
 
 
