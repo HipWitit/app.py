@@ -1,0 +1,7 @@
+[theme]
+primaryColor = "#FFB7B2" # Soft Pastel Pink/Coral for buttons
+backgroundColor = "#FDFCF0" # Off-white/Cream pastel background
+secondaryBackgroundColor = "#E1F7F5" # Very light pastel mint for sidebars/tabs
+textColor = "#4A4A4A" # Dark grey (softer than pure black)
+font = "sans serif"
+
