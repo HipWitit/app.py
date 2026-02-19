@@ -1,18 +1,18 @@
 import streamlit as st
 import re
 
-# 1. THE EXPANDED 30x30 COORDINATE MAP
+# 1. THE COMPLETE 30x30 COORDINATE MAP
 char_to_coord = {
-    '1': (2, 25), '2': (5, 25), '3': (8, 25), '6': (14, 25), '7': (17, 25), '8': (20, 25),
-    'Q': (2, 20), 'W': (5, 20), 'E': (8, 20), 'Y': (14, 20), 'U': (17, 20), 'I': (20, 20),
-    'A': (3, 15), 'S': (6, 15), 'D': (9, 15), 'H': (15, 15), 'J': (18, 15), 'K': (21, 15),
-    'Z': (4, 10), 'X': (7, 10), 'C': (10, 10), 'N': (16, 10), 'M': (19, 10),
-    '!': (5, 5),  ',': (8, 5),  ' ': (15, 5)
+    'Q': (2, 25), 'W': (5, 25), 'E': (8, 25), 'R': (11, 25), 'T': (14, 25), 'Y': (17, 25), 'U': (20, 25), 'I': (23, 25), 'O': (26, 25), 'P': (29, 25),
+    'A': (3, 20), 'S': (6, 20), 'D': (9, 20), 'F': (12, 20), 'G': (15, 20), 'H': (18, 20), 'J': (21, 20), 'K': (24, 20), 'L': (27, 20),
+    'Z': (4, 15), 'X': (7, 15), 'C': (10, 15), 'V': (13, 15), 'B': (16, 15), 'N': (19, 15), 'M': (22, 15),
+    '1': (2, 10), '2': (5, 10), '3': (8, 10), '4': (11, 10), '5': (14, 10), '6': (17, 10), '7': (20, 10), '8': (23, 10), '9': (26, 10), '0': (29, 10),
+    '!': (5, 5),  ',': (10, 5), '.': (15, 5), ' ': (20, 5), '?': (25, 5)
 }
 
 coord_to_char = {v: k for k, v in char_to_coord.items()}
 
-# 2. THE TRANSFORMATION BRAIN
+# 2. THE TRANSFORMATION BRAIN (Verified Correct)
 def transform(x, y, key):
     if key == "CHILL": 
         return y, x
@@ -44,25 +44,21 @@ with col2:
 
 st.markdown("Share secret messages using keyed coordinate displacements.")
 
-# 4. KEYWORD INPUT
 kw = st.text_input("Enter Secret Key", type="password").upper().strip()
 
 tab1, tab2 = st.tabs(["Encode Message", "Decode Vectors"])
 
-# 5. ENCODING TAB
+# 4. ENCODING TAB
 with tab1:
     st.header("Create a Cipher")
     msg_input = st.text_input("Enter message:", value="WUBADOO!")
     
     if msg_input:
         msg = msg_input.upper()
-        # Transform coords based on key
         coords = [transform(char_to_coord[c][0], char_to_coord[c][1], kw) for c in msg if c in char_to_coord]
         
         if coords:
-            st.subheader(f"Transformed Start Point: {coords[0]}")
-            
-            # This loop calculates the vectors (dx, dy)
+            st.subheader(f"Transformed Start Point: ({coords[0][0]}, {coords[0][1]})")
             full_code = []
             for i in range(len(coords) - 1):
                 x1, y1 = coords[i]
@@ -70,11 +66,10 @@ with tab1:
                 dx, dy = x2 - x1, y2 - y1
                 full_code.append(f"({dx},{dy})")
             
-            # Displays the final copyable code
             st.success("Sharable Code:")
-            st.code(f"START: {coords[0][0]},{coords[0][1]} | MOVES: {' '.join(full_code)}")
+            st.code(f"{coords[0][0]},{coords[0][1]} | MOVES: {' '.join(full_code)}")
 
-# 6. DECODING TAB
+# 5. DECODING TAB
 with tab2:
     st.header("Read a Cipher")
     col1, col2 = st.columns(2)
@@ -87,7 +82,6 @@ with tab2:
         try:
             sx, sy = map(int, start_in.split(','))
             curr = (sx, sy)
-            
             ux, uy = untransform(sx, sy, kw)
             decoded = [coord_to_char.get((ux, uy), "?")]
             
@@ -99,6 +93,7 @@ with tab2:
             
             st.info(f"Decoded Message: {''.join(decoded)}")
         except Exception as e:
-            st.error("Error! Check your Start Point and Vector formatting.")
+            st.error("Error! Please check your formatting.")
+
 
 
