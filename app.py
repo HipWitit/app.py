@@ -24,16 +24,20 @@ def transform(x, y, key):
         return y, (30 - x)
     return x, y 
 
+def transform(x, y, key):
+    if key == "CHILL": 
+        return y, x
+    elif key == "PEACHY": 
+        return (30 - y), (30 - x)  # Flip and swap
+    # ... rest of transform ...
+
 def untransform(x, y, key):
     if key == "CHILL":
         return y, x
     elif key == "PEACHY":
-        return (30 - x), (30 - y)
-    elif key == "SIMON SAYS":
-        return y, (30 - x)
-    elif key == "BABY":
-        return (30 - y), x
-    return x, y
+        return (30 - y), (30 - x)  # Must be the SAME as transform
+    # ... rest of untransform ...
+
 
 # 3. UI STYLING
 col1, col2 = st.columns([1, 5])
