@@ -1,8 +1,8 @@
 [theme]
 primaryColor = "#FFB7B2" # Soft Coral
 backgroundColor = "#CCCCFF" # New Periwinkle Lavender
-secondaryBackgroundColor = "#A1A1CE" # Lavender Blue
-textColor = "#EFAFD8" # Changed to pink for better contrast on the darker background
+secondaryBackgroundColor = "#EFAFD8" # Pink
+textColor = "#A1A1CE" # Changed to Lavender Blue for better contrast on the darker background
 font = "sans serif"
 
 
