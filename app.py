@@ -1,7 +1,7 @@
 import streamlit as st
 import re
 
-# 1. THE COORDINATE MAP (Based on your 30x30 setup)
+# 1. THE COORDINATE MAP
 char_to_coord = {
     '1': (2, 25), '2': (5, 25), '3': (8, 25), '6': (14, 25), '7': (17, 25), '8': (20, 25),
     'Q': (2, 20), 'W': (5, 20), 'E': (8, 20), 'Y': (14, 20), 'U': (17, 20), 'I': (20, 20),
@@ -28,9 +28,81 @@ def untransform(x, y, key):
     if key == "CHILL":
         return y, x
     elif key == "PEACHY":
-        # Fixed: Now perfectly mirrors the transform swap
+        # Fixed: Matches the swap-and-subtract logic of transform
         return (30 - y), (30 - x)
-    elif key == "SIMON S
+    elif key == "SIMON SAYS":
+        return y, (30 - x)
+    elif key == "BABY":
+        return (30 - y), x
+    return x, y
+
+# 3. UI STYLING
+col1, col2 = st.columns([1, 5])
+with col1:
+    st.image("https://raw.githubusercontent.com/HipWitit/app.py/main/5ob23b1bfmdf1.jpeg", width=80)
+with col2:
+    st.title("Vector Movement Cipher")
+
+st.markdown("Share secret messages using keyed coordinate displacements.")
+
+# 4. KEYWORD INPUT
+kw = st.text_input("Enter Secret Key", type="password").upper().strip()
+
+tab1, tab2 = st.tabs(["Encode Message", "Decode Vectors"])
+
+# 5. ENCODING TAB
+with tab1:
+    st.header("Create a Cipher")
+    msg_input = st.text_input("Enter message:")
+    
+    if msg_input:
+        msg = msg_input.upper()
+        coords = [transform(char_to_coord[c][0], char_to_coord[c][1], kw) for c in msg if c in char_to_coord]
+        
+        if coords:
+            # Fixed the TypeError by showing specific numbers
+            st.subheader(f"Transformed Start Point: {coords[0][0]},{coords[0][1]}")
+            
+            full_code = []
+            for i in range(len(coords) - 1):
+                x1, y1 = coords[i]
+                x2, y2 = coords[i+1]
+                dx, dy = x2 - x1, y2 - y1
+                full_code.append(f"({dx},{dy})")
+            
+            st.success("Sharable Code:")
+            st.code(f"{coords[0][0]},{coords[0][1]} | MOVES: {' '.join(full_code)}")
+
+# 6. DECODING TAB
+with tab2:
+    st.header("Read a Cipher")
+    col1, col2 = st.columns(2)
+    with col1:
+        start_in = st.text_input("Start Point (x,y):")
+    with col2:
+        vector_in = st.text_area("Vectors:")
+
+    if st.button("Decode"):
+        try:
+            sx, sy = map(int, start_in.split(','))
+            curr = (sx, sy)
+            
+            # Step 1: Untransform the start
+            ux, uy = untransform(sx, sy, kw)
+            decoded = [coord_to_char.get((ux, uy), "?")]
+            
+            # Step 2: Use regex to find all vector pairs
+            moves = re.findall(r"(-?\d+),(-?\d+)", vector_in)
+            for dx, dy in moves:
+                curr = (curr[0] + int(dx), curr[1] + int(dy))
+                ux, uy = untransform(curr[0], curr[1], kw)
+                decoded.append(coord_to_char.get((ux, uy), "?"))
+            
+            st.info(f"Decoded Message: {''.join(decoded)}")
+        except Exception:
+            st.error("Error! Check your Start Point (x,y) and Vectors.")
+
+
 
 
 
